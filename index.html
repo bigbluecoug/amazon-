@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Campaign Sender Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <p class="eyebrow">Campaign Sender Studio</p>
+        <h1>Prepare your gifting workflow for Amazon Business automation.</h1>
+        <p class="hero-text">
+          Plan the sequence, assign recipients, configure Amazon Business placeholders,
+          and process due gifts through a review-safe order pipeline.
+        </p>
+      </header>
+
+      <main class="dashboard">
+        <section class="panel">
+          <div class="panel-heading">
+            <h2>1. Campaign</h2>
+            <p>Name the campaign, choose a start date, and define the audience rules.</p>
+          </div>
+
+          <form id="campaign-form" class="stack-form">
+            <input id="campaign-name" type="text" placeholder="Campaign name" required />
+            <textarea
+              id="campaign-goal"
+              rows="3"
+              placeholder="What is this campaign for?"
+            ></textarea>
+            <input
+              id="campaign-owner"
+              type="text"
+              placeholder="Campaign owner or sender name"
+            />
+            <input
+              id="campaign-start-date"
+              type="date"
+              aria-label="Campaign start date"
+            />
+            <input
+              id="target-filter"
+              type="text"
+              placeholder="Target filter, example: New pipeline prospects in Denver"
+            />
+            <div class="button-row">
+              <button type="submit" class="primary-button">Save campaign</button>
+              <button id="load-saved" type="button" class="secondary-button">Reload saved</button>
+            </div>
+          </form>
+
+          <p id="campaign-status" class="helper-text">
+            Campaign changes save locally in this project.
+          </p>
+        </section>
+
+        <section class="panel wide-panel">
+          <div class="panel-heading">
+            <h2>2. Send sequence</h2>
+            <p>
+              Add as many steps as you want. Each step can have a delay, product, quantity,
+              and personalized message.
+            </p>
+          </div>
+
+          <div id="steps-list" class="step-list"></div>
+
+          <div class="button-row">
+            <button id="add-step" type="button" class="primary-button">Add send step</button>
+            <button id="seed-three-step" type="button" class="secondary-button">
+              Seed 3-step example
+            </button>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-heading">
+            <h2>3. Recipients</h2>
+            <p>Paste recipients manually, then assign each contact to the right owner.</p>
+          </div>
+
+          <form id="quick-recipient-form" class="stack-form">
+            <input id="quick-name" type="text" placeholder="Full name" />
+            <input id="quick-email" type="email" placeholder="Email" />
+            <input id="quick-company" type="text" placeholder="Company" />
+            <input id="quick-street" type="text" placeholder="Street" />
+            <div class="step-grid">
+              <input id="quick-city" type="text" placeholder="City" />
+              <input id="quick-state" type="text" placeholder="State" />
+              <input id="quick-zip" type="text" placeholder="Zip" />
+              <input id="quick-assigned-to" type="text" placeholder="Assigned to" />
+            </div>
+            <textarea
+              id="quick-assignment-note"
+              rows="2"
+              placeholder="Assignment note"
+            ></textarea>
+            <div class="button-row">
+              <button type="submit" class="primary-button">Add one contact</button>
+            </div>
+          </form>
+
+          <form id="recipient-form" class="stack-form">
+            <textarea
+              id="manual-recipients"
+              rows="8"
+              placeholder="One recipient per line. Format: Full Name | email@example.com | Company | Street | City | State | Zip | Assigned To"
+            ></textarea>
+            <div class="button-row">
+              <button type="submit" class="primary-button">Use pasted recipients</button>
+            </div>
+          </form>
+
+          <p id="recipient-status" class="helper-text">
+            HubSpot can be added later. For now, paste recipients and assign them here.
+          </p>
+          <p id="recipient-warning" class="helper-text"></p>
+
+          <div id="recipient-list" class="recipient-list"></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-heading">
+            <h2>4. Amazon Setup</h2>
+            <p>
+              Save the Amazon Business integration details now so the backend shape is ready
+              when credentials are available.
+            </p>
+          </div>
+
+          <form id="amazon-form" class="stack-form">
+            <select id="amazon-mode">
+              <option value="queue-only">Amazon mode: Queue only</option>
+              <option value="amazon-business-ready">Amazon mode: Amazon Business ready</option>
+            </select>
+            <input id="amazon-region" type="text" placeholder="Region, example: na" />
+            <input
+              id="amazon-marketplace"
+              type="text"
+              placeholder="Marketplace or business account label"
+            />
+            <input id="amazon-client-id" type="text" placeholder="Amazon client ID" />
+            <input
+              id="amazon-refresh-token"
+              type="password"
+              placeholder="Amazon refresh token"
+            />
+            <input
+              id="amazon-endpoint"
+              type="url"
+              placeholder="Ordering API endpoint"
+            />
+            <textarea
+              id="shipping-defaults"
+              rows="3"
+              placeholder="Optional shipping notes or default sender signature"
+            ></textarea>
+            <div class="button-row">
+              <button type="submit" class="primary-button">Save Amazon setup</button>
+            </div>
+          </form>
+
+          <p id="amazon-status" class="helper-text">
+            Credentials are stored locally for now. Live order submission is still a stub
+            until you have approved Amazon Business API access.
+          </p>
+        </section>
+
+        <section class="panel">
+          <div class="panel-heading">
+            <h2>5. Email Automation</h2>
+            <p>
+              Configure the email provider details and choose whether the email should send
+              when the gift is marked sent or marked delivered.
+            </p>
+          </div>
+
+          <form id="email-form" class="stack-form">
+            <select id="email-enabled">
+              <option value="disabled">Email automation: Off</option>
+              <option value="enabled">Email automation: On</option>
+            </select>
+            <select id="email-trigger">
+              <option value="sent">Send email when gift is sent</option>
+              <option value="delivered">Send email when gift is delivered</option>
+            </select>
+            <input id="email-host" type="text" placeholder="SMTP host" />
+            <div class="step-grid">
+              <label class="field-label">
+                <span>SMTP port</span>
+                <input id="email-port" type="number" placeholder="587" />
+              </label>
+              <label class="field-label">
+                <span>From address</span>
+                <input id="email-from" type="email" placeholder="you@company.com" />
+              </label>
+            </div>
+            <input id="email-username" type="text" placeholder="SMTP username" />
+            <input id="email-password" type="password" placeholder="SMTP password" />
+            <label class="field-label">
+              <span>Subject when gift is sent</span>
+              <input id="email-subject-sent" type="text" placeholder="A gift is on the way for you" />
+            </label>
+            <label class="field-label">
+              <span>Email when gift is sent</span>
+              <textarea
+                id="email-body-sent"
+                rows="4"
+                placeholder="Hi {{firstName}}, I just sent a small gift your way..."
+              ></textarea>
+            </label>
+            <label class="field-label">
+              <span>Subject when gift is delivered</span>
+              <input id="email-subject-delivered" type="text" placeholder="Your gift was delivered" />
+            </label>
+            <label class="field-label">
+              <span>Email when gift is delivered</span>
+              <textarea
+                id="email-body-delivered"
+                rows="4"
+                placeholder="Hi {{firstName}}, your gift should have arrived today..."
+              ></textarea>
+            </label>
+            <div class="button-row">
+              <button type="submit" class="primary-button">Save email setup</button>
+            </div>
+          </form>
+
+          <p id="email-status" class="helper-text">
+            Emails will only send automatically after SMTP settings are filled in and an order
+            changes to the trigger status.
+          </p>
+        </section>
+
+        <section class="panel">
+          <div class="panel-heading">
+            <h2>6. Execution</h2>
+            <p>
+              Build the queue, process gifts that are due, and maintain local order history
+              before live submission is switched on.
+            </p>
+          </div>
+
+          <form id="execution-form" class="stack-form">
+            <input id="run-date" type="date" aria-label="Run date" />
+            <div class="button-row">
+              <button type="submit" class="primary-button">Build purchase queue</button>
+              <button id="send-due-gifts" type="button" class="secondary-button">
+                Process due gifts
+              </button>
+              <button id="copy-json" type="button" class="secondary-button">Copy JSON</button>
+            </div>
+          </form>
+
+          <p id="execution-status" class="helper-text">
+            Direct Amazon checkout is not enabled by default. Due gifts are processed into
+            tracked local order records first.
+          </p>
+        </section>
+
+        <section class="panel wide-panel">
+          <div class="panel-heading">
+            <h2>7. Order history</h2>
+            <p>Track due gifts, submission readiness, and manual status changes.</p>
+          </div>
+          <div id="order-history" class="recipient-list"></div>
+        </section>
+
+        <section class="panel wide-panel">
+          <div class="panel-heading">
+            <h2>8. Queue preview</h2>
+            <p>Review the recipients, schedule, messages, and Amazon-ready payloads.</p>
+          </div>
+          <pre id="queue-output" class="code-block"></pre>
+        </section>
+      </main>
+    </div>
+
+    <template id="step-template">
+      <article class="step-card">
+        <div class="step-topline">
+          <h3 class="step-title">Step</h3>
+          <button type="button" class="ghost-button remove-step">Remove</button>
+        </div>
+        <div class="step-grid">
+          <label class="field-label">
+            <span>Step name</span>
+            <input class="step-name" type="text" placeholder="Step name" />
+          </label>
+          <label class="field-label">
+            <span>Send after days</span>
+            <input class="step-delay" type="number" min="0" placeholder="Delay in days" />
+          </label>
+          <label class="field-label">
+            <span>Item name</span>
+            <input class="step-item-name" type="text" placeholder="Item name" />
+          </label>
+          <label class="field-label">
+            <span>Amazon ASIN</span>
+            <input class="step-asin" type="text" placeholder="Amazon ASIN" />
+          </label>
+          <label class="field-label">
+            <span>Amazon product URL</span>
+            <input class="step-url" type="url" placeholder="Amazon product URL" />
+          </label>
+          <label class="field-label">
+            <span>Quantity</span>
+            <input class="step-quantity" type="number" min="1" value="1" placeholder="Quantity" />
+          </label>
+        </div>
+        <label class="field-label">
+          <span>Message template</span>
+          <textarea class="step-message" rows="4" placeholder="Message template"></textarea>
+        </label>
+        <label class="field-label">
+          <span>Email subject when gift is sent</span>
+          <input
+            class="step-email-subject-sent"
+            type="text"
+            placeholder="Custom subject for this gift"
+          />
+        </label>
+        <label class="field-label">
+          <span>Email body when gift is sent</span>
+          <textarea
+            class="step-email-body-sent"
+            rows="4"
+            placeholder="Custom email for this gift"
+          ></textarea>
+        </label>
+        <label class="field-label">
+          <span>Email subject when gift is delivered</span>
+          <input
+            class="step-email-subject-delivered"
+            type="text"
+            placeholder="Optional delivered subject for this gift"
+          />
+        </label>
+        <label class="field-label">
+          <span>Email body when gift is delivered</span>
+          <textarea
+            class="step-email-body-delivered"
+            rows="4"
+            placeholder="Optional delivered email for this gift"
+          ></textarea>
+        </label>
+        <label class="field-label">
+          <span>Internal note</span>
+          <textarea class="step-note" rows="2" placeholder="Gift note or internal note"></textarea>
+        </label>
+      </article>
+    </template>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
